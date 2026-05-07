@@ -4,6 +4,7 @@ import { LogOut, User } from 'lucide-react';
 const Navbar = () => {
 	const { state, dispatch } = useApp();
 
+	// Navigation helper: changes the current page in global state.
 	const handleNavigate = (page, id = null) => {
 		dispatch({ type: 'NAVIGATE', payload: { page, id } });
 	};
@@ -11,6 +12,7 @@ const Navbar = () => {
 	return (
 		<nav className='absolute top-0 w-full z-[100] h-24 border-b border-white/5 bg-gradient-to-b from-black/80 to-transparent'>
 			<div className='max-w-[1400px] mx-auto px-6 h-full flex items-center justify-between gap-8'>
+				{/* Logo action: clicking the Dealio mark returns to the home page. */}
 				<button
 					type='button'
 					aria-label='Go to Dealio home'
@@ -37,6 +39,7 @@ const Navbar = () => {
 				{/* LINKS */}
 				<div className='hidden md:flex items-center gap-10'>
 					{['HOME', 'MATCHES', 'FEATURES', 'SHOP'].map((link) => {
+						// Active-link logic: highlights the nav item matching currentPage.
 						const pageId = link.toLowerCase();
 						const isActive = state.currentPage === pageId || (pageId === 'home' && !['matches', 'features', 'shop', 'cart', 'login', 'detail'].includes(state.currentPage));
 
@@ -56,6 +59,7 @@ const Navbar = () => {
 				{/* ACTIONS */}
 				<div className='flex items-center gap-6'>
 					{state.user ? (
+						/* Authenticated state: shows user identity and logout control. */
 						<div className='flex items-center gap-4 bg-dark-border/50 px-4 py-2 rounded-none border border-white/5'>
 							<div className='hidden sm:block text-right'>
 								<p className='text-[10px] font-bold text-primary uppercase tracking-widest'>Operative</p>
@@ -69,6 +73,7 @@ const Navbar = () => {
 							</button>
 						</div>
 					) : (
+						/* Guest state: sends unauthenticated users to the login page. */
 						<button 
 							className='btn-primary flex items-center gap-2'
 							onClick={() => handleNavigate('login')}

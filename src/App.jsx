@@ -14,10 +14,12 @@ import { motion as Motion, AnimatePresence } from 'framer-motion';
 function AppContent() {
 	const { state } = useApp();
 
+	// Page-change effect: scrolls to the top whenever app navigation changes.
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, [state.currentPage]);
 
+	// Page router: chooses which screen to render from the global currentPage state.
 	const renderPage = () => {
 		switch (state.currentPage) {
 			case 'login':
@@ -40,6 +42,7 @@ function AppContent() {
 
 	return (
 		<div className='relative min-h-screen selection:bg-primary/30 selection:text-white'>
+			{/* Global background and navigation stay visible across all pages. */}
 			<Background3D />
 			<Navbar />
 			
@@ -56,6 +59,7 @@ function AppContent() {
 
 			<AnimatePresence>
 				{state.toast && (
+					// Toast UI: shows temporary feedback messages triggered from context actions.
 					<Motion.div
 						initial={{ opacity: 0, y: 50, x: '-50%' }}
 						animate={{ opacity: 1, y: 0, x: '-50%' }}

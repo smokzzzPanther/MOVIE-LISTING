@@ -11,6 +11,7 @@ const Sidebar = ({ selectedCategory, setSelectedCategory, selectedPriceRange, se
 
 			<div className='space-y-10'>
 				<div className='space-y-4'>
+					{/* Category filter: updates selectedCategory used by Armory filtering logic. */}
 					<h3 className='text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] px-2'>Category</h3>
 					<div className='space-y-1'>
 						{categories.map((category) => (
@@ -33,6 +34,7 @@ const Sidebar = ({ selectedCategory, setSelectedCategory, selectedPriceRange, se
 				</div>
 
 				<div className='space-y-4'>
+					{/* Price filter: updates selectedPriceRange used by Armory price filtering. */}
 					<h3 className='text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] px-2'>Investment Range</h3>
 					<div className='space-y-1'>
 						{priceRanges.map((range) => (

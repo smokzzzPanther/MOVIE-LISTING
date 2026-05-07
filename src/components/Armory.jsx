@@ -7,12 +7,14 @@ import { motion as Motion, AnimatePresence } from 'framer-motion';
 import { Loader } from 'lucide-react';
 
 const Armory = () => {
+	// Armory state: stores selected filters, selected sort mode, and how many cards are visible.
 	const { state, dispatch, showToast } = useApp();
 	const [selectedCategory, setSelectedCategory] = useState('All');
 	const [selectedPriceRange, setSelectedPriceRange] = useState(priceRanges[0]);
 	const [sortBy, setSortBy] = useState('Newest');
 	const [visibleCount, setVisibleCount] = useState(6);
 
+	// Product filtering and sorting logic: search/category/price filters run first, then sort order is applied.
 	const filteredProducts = useMemo(() => {
 		let result = state.products.filter((product) => {
 			const matchesSearch = product.title
@@ -38,6 +40,7 @@ const Armory = () => {
 		return result;
 	}, [state.products, state.searchQuery, selectedCategory, selectedPriceRange, sortBy]);
 
+	// Pagination logic: only renders the first visibleCount products until "Load More" is clicked.
 	const visibleProducts = filteredProducts.slice(0, visibleCount);
 
 	return (
@@ -64,6 +67,7 @@ const Armory = () => {
                         </div>
 
                         <div className='flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide'>
+                            {/* Sort controls: updates sortBy, which drives the useMemo sorting logic above. */}
                             {['Newest', 'Price: Low to High', 'Price: High to Low', 'Rating'].map((sort) => (
                                 <button
                                     key={sort}
@@ -100,6 +104,7 @@ const Armory = () => {
                                             product={product}
                                             onClick={() => dispatch({ type: 'NAVIGATE', payload: { page: 'detail', id: product.id } })}
                                             onAddToCart={(p) => {
+                                                // Add-to-cart action: stores the product globally and shows a toast.
                                                 dispatch({ type: 'ADD_TO_CART', payload: p });
                                                 showToast(`${p.title} added to armory stash!`);
                                             }}
@@ -110,6 +115,7 @@ const Armory = () => {
 
                             {visibleCount < filteredProducts.length && (
                                 <div className="mt-16 flex justify-center">
+                                    {/* Load-more action: reveals the next batch of product cards. */}
                                     <button 
                                         className="btn-primary"
                                         onClick={() => setVisibleCount(prev => prev + 6)}

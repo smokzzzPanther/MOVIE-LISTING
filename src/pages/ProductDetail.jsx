@@ -4,9 +4,11 @@ import { motion as Motion } from 'framer-motion';
 import { ShoppingCart, ArrowLeft, Star, Shield, Truck, RotateCcw, Plus, Minus, Loader } from 'lucide-react';
 
 const ProductDetail = () => {
+	// Detail state: reads selectedProductId globally and stores desired quantity locally.
 	const { state, dispatch, showToast } = useApp();
 	const [quantity, setQuantity] = useState(1);
 
+	// Loading guard: shown while products are being loaded into context.
 	if (state.isLoadingProducts) {
 		return (
 			<div className="flex flex-col items-center justify-center min-h-[calc(100vh-80px)] opacity-50">
@@ -16,8 +18,10 @@ const ProductDetail = () => {
 		);
 	}
 
+	// Product lookup: finds the product selected from Armory by selectedProductId.
 	const product = state.products.find((p) => p.id === state.selectedProductId);
 
+	// Missing-product guard: sends the user back if the selected product cannot be found.
 	if (!product) {
 		return (
 			<div className='min-h-[calc(100vh-80px)] flex flex-col items-center justify-center gap-8'>
@@ -32,6 +36,7 @@ const ProductDetail = () => {
 		);
 	}
 
+	// Add-to-cart logic: dispatches one cart add per selected quantity.
 	const handleAddToCart = () => {
 		for (let i = 0; i < quantity; i++) {
 			dispatch({ type: 'ADD_TO_CART', payload: product });
@@ -41,6 +46,7 @@ const ProductDetail = () => {
 
 	return (
 		<div className='max-w-[1400px] mx-auto px-6 py-12 pt-32'>
+			{/* Back action: returns from ProductDetail to the armory/home page. */}
 			<button
 				onClick={() => dispatch({ type: 'NAVIGATE', payload: { page: 'home' } })}
 				className='flex items-center gap-2 text-slate-400 hover:text-primary font-black text-sm mb-10 transition-colors group uppercase tracking-widest'
@@ -50,6 +56,7 @@ const ProductDetail = () => {
 			</button>
 
 			<div className='grid grid-cols-1 lg:grid-cols-2 gap-16 xl:gap-24'>
+				{/* Product media section: displays the selected product image. */}
 				<Motion.div
 					initial={{ opacity: 0, x: -20 }}
 					animate={{ opacity: 1, x: 0 }}
@@ -65,6 +72,7 @@ const ProductDetail = () => {
 					<div className='absolute -bottom-6 -right-6 w-32 h-32 bg-primary rounded-full blur-3xl opacity-20'></div>
 				</Motion.div>
 
+				{/* Product purchase section: displays details, price, quantity, and cart action. */}
 				<Motion.div
 					initial={{ opacity: 0, x: 20 }}
 					animate={{ opacity: 1, x: 0 }}
@@ -104,6 +112,7 @@ const ProductDetail = () => {
 
 					<div className='space-y-8'>
 						<div className='flex items-center gap-8'>
+							{/* Quantity controls: clamps the minimum quantity to 1. */}
 							<div className='flex items-center gap-4 bg-dark-bg p-2 border border-white/10'>
 								<button
 									className='w-12 h-12 flex items-center justify-center hover:bg-white/5 transition-colors text-white'
@@ -130,6 +139,7 @@ const ProductDetail = () => {
 						</div>
 
 						<div className='grid grid-cols-3 gap-6 pt-10 border-t border-white/5'>
+							{/* Trust badges: summarizes warranty, delivery, and return policy. */}
 							<div className='space-y-3'>
 								<div className='w-12 h-12 bg-dark-surface border border-primary/30 flex items-center justify-center text-primary'>
 									<Shield size={24} />

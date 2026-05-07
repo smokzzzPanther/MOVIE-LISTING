@@ -1,3 +1,4 @@
+// Product catalog: local inventory used by the armory, product detail, and cart pages.
 export const products = [
 	{
 		id: 1,
@@ -109,6 +110,7 @@ export const products = [
 	},
 ];
 
+// Filter options: consumed by Sidebar and Armory filtering logic.
 export const categories = ['All', 'Keyboards', 'Mice', 'Mousepads', 'Headsets', 'Monitors'];
 export const priceRanges = [
 	{ label: 'All Prices', min: 0, max: Infinity },

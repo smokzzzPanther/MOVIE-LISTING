@@ -5,6 +5,7 @@ import { Float, Points, PointMaterial } from '@react-three/drei';
 function FloatingCubes() {
   const group = useRef();
   
+  // Animation frame: rotates and floats the cube group continuously.
   useFrame((state) => {
     if (group.current) {
       group.current.rotation.y += 0.002;
@@ -12,6 +13,7 @@ function FloatingCubes() {
     }
   });
 
+  // Cube setup: creates random positions and sizes once for the 3D background.
   const cubes = useMemo(() => {
     return Array.from({ length: 20 }).map(() => ({
       position: [
@@ -52,6 +54,7 @@ function FloatingCubes() {
 function Stars() {
   const ref = useRef();
   
+  // Star field setup: creates a fixed cloud of random point positions.
   const positions = useMemo(() => {
     const positions = new Float32Array(5000 * 3);
     for (let i = 0; i < positions.length; i++) {
@@ -60,6 +63,7 @@ function Stars() {
     return positions;
   }, []);
 
+  // Animation frame: slowly rotates the star field for background motion.
   useFrame(() => {
     if (ref.current) {
       ref.current.rotation.x -= 0.0005;
@@ -85,6 +89,7 @@ function Stars() {
 const Background3D = () => {
   return (
     <div className="bg-3d">
+      {/* Global 3D canvas: renders ambient stars and floating cubes behind the app. */}
       <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
         <ambientLight intensity={0.3} />
         <pointLight position={[10, 10, 10]} intensity={0.8} color="#FF6B00" />

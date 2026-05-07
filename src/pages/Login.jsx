@@ -5,9 +5,11 @@ import { Mail, Lock, LogIn } from 'lucide-react';
 import { useForm } from '../hooks/useForm';
 
 const Login = () => {
+	// Login state: dispatches successful auth and stores local authentication errors.
 	const { dispatch } = useApp();
 	const [authError, setAuthError] = useState('');
 
+	// Validation logic: checks required email/password and basic email/password rules.
 	const validate = (values) => {
 		const errors = {};
 		if (!values.email) {
@@ -29,6 +31,7 @@ const Login = () => {
 		validate
 	);
 
+	// Submit logic: accepts demo credentials and rejects all other combinations.
 	const onSubmit = (formData) => {
 		if (formData.email === 'john@example.com' && formData.password === 'password123') {
 			dispatch({ type: 'LOGIN', payload: { name: 'John Doe', email: formData.email } });
@@ -49,6 +52,7 @@ const Login = () => {
 					<p className='text-slate-400 font-bold'>Authenticate to access the armory</p>
 				</div>
 
+				{/* Login form: useForm handles field updates, validation, and submit blocking. */}
 				<form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
 					{authError && (
 						<div className='p-4 bg-red-500/10 border border-red-500/20 rounded-none text-red-400 text-xs font-bold text-center'>
@@ -99,6 +103,7 @@ const Login = () => {
 				</form>
 
 				<div className='mt-10 pt-10 border-t border-white/5'>
+					{/* Demo credential helper: shows the test account accepted by onSubmit. */}
 					<div className='bg-primary/5 p-4 rounded-none border border-primary/20'>
 						<p className='text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-2'>Demo Credentials</p>
 						<div className='flex justify-between items-center'>

@@ -10,9 +10,10 @@ const Home = () => {
             exit={{ opacity: 0 }}
             className="w-full flex flex-col"
         >
+            {/* Home hero section: shows the landing headline and primary CTA. */}
             <Hero />
             
-            {/* The Armory section replaces our old "Home" product grid */}
+            {/* Armory section: renders product filters, sorting, and product grid. */}
             <Armory />
 
         </Motion.div>

@@ -2,6 +2,7 @@ import { Star, ShoppingCart } from 'lucide-react';
 import { motion as Motion } from 'framer-motion';
 
 const ProductCard = ({ product, onClick, onAddToCart }) => {
+	// Cart button handler: prevents card navigation and adds only this product to cart.
 	const handleAddToCart = (e) => {
 		e.stopPropagation();
 		if (onAddToCart) {
@@ -10,6 +11,7 @@ const ProductCard = ({ product, onClick, onAddToCart }) => {
 	};
 
 	return (
+		/* Card click: opens ProductDetail through the onClick handler passed by Armory. */
 		<Motion.div
 			layout
 			whileHover={{ y: -5 }}
@@ -17,6 +19,7 @@ const ProductCard = ({ product, onClick, onAddToCart }) => {
 			className='glass-card group p-4 cursor-pointer flex flex-col bg-dark-surface/90 border border-dark-border hover:border-primary transition-all duration-300'
 		>
 			<div className='relative aspect-[4/5] rounded-none overflow-hidden bg-black mb-6 border border-dark-border'>
+				{/* Product image section: shows the product preview and rating badge. */}
 				<img 
 					src={product.image} 
 					alt={product.title} 
@@ -31,6 +34,7 @@ const ProductCard = ({ product, onClick, onAddToCart }) => {
 			</div>
 
 			<div className='flex flex-col flex-1'>
+				{/* Product info section: shows category, seller, title, price, and cart action. */}
 				<div className='flex items-center justify-between mb-2 px-1'>
 					<span className='text-[10px] font-black text-primary uppercase tracking-widest'>{product.category}</span>
 					<span className='text-[10px] font-bold text-slate-500 uppercase'>{product.seller}</span>

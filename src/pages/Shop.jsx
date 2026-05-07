@@ -9,6 +9,7 @@ const Shop = () => {
             exit={{ opacity: 0 }}
             className="w-full min-h-screen pt-24"
         >
+            {/* Shop page: reuses Armory for product filtering, sorting, and browsing. */}
             <Armory />
         </Motion.div>
     );

@@ -27,6 +27,7 @@ const statusFilters = [
     { id: 'COMPLETED', label: 'Completed' },
 ];
 
+// Tournament data source: local match schedule used to calculate live/upcoming states.
 const matchData = [
     {
         id: 1,
@@ -109,6 +110,7 @@ const matchData = [
 
 const getTime = (value) => new Date(value).getTime();
 
+// Status logic: decides whether a tournament is live, open, locked, or completed.
 const getMatchStatus = (match, now) => {
     const start = getTime(match.startAt);
     const end = getTime(match.endAt);
@@ -157,6 +159,7 @@ const getMatchStatus = (match, now) => {
     };
 };
 
+// Countdown formatter: converts a future timestamp into a compact live timer string.
 const formatCountdown = (targetTime, now) => {
     if (!targetTime) return 'ARCHIVED';
 
@@ -172,6 +175,7 @@ const formatCountdown = (targetTime, now) => {
     return `${minutes}m ${seconds}s`;
 };
 
+// Schedule formatter: displays match start/end in India time.
 const formatDateWindow = (startAt, endAt) => {
     const formatter = new Intl.DateTimeFormat('en-IN', {
         day: '2-digit',
@@ -186,16 +190,19 @@ const formatDateWindow = (startAt, endAt) => {
 };
 
 const Matches = () => {
+    // Matches state: tracks current time, active status filter, search input, and auth state.
     const { state, dispatch, showToast } = useApp();
     const [now, setNow] = useState(() => Date.now());
     const [activeFilter, setActiveFilter] = useState('ALL');
     const [searchQuery, setSearchQuery] = useState('');
 
+    // Real-time clock: updates countdowns and status calculations once per second.
     useEffect(() => {
         const timer = window.setInterval(() => setNow(Date.now()), 1000);
         return () => window.clearInterval(timer);
     }, []);
 
+    // Match enrichment and sorting: attaches computed status, puts live events first, then sorts by start time.
     const enrichedMatches = useMemo(
         () =>
             matchData
@@ -211,6 +218,7 @@ const Matches = () => {
         [now]
     );
 
+    // Status count logic: calculates badge numbers for the filter buttons and summary cards.
     const statusCounts = useMemo(
         () =>
             enrichedMatches.reduce(
@@ -223,6 +231,7 @@ const Matches = () => {
         [enrichedMatches]
     );
 
+    // Search and filter logic: matches text query and selected status tab.
     const filteredMatches = useMemo(() => {
         const normalizedQuery = searchQuery.trim().toLowerCase();
 
@@ -241,6 +250,7 @@ const Matches = () => {
     const openCount = statusCounts.OPEN || 0;
     const nextMatch = enrichedMatches.find((match) => match.status.key !== 'COMPLETED');
 
+    // Match action logic: handles watch/register/results/reminder behavior based on status and login state.
     const handleMatchAction = (match) => {
         if (match.status.key === 'LIVE') {
             showToast(`${match.channel} stream room is ready.`);
@@ -248,6 +258,7 @@ const Matches = () => {
         }
 
         if (match.status.key === 'OPEN') {
+            // Registration guard: guests must log in before registering for an open tournament.
             if (!state.user) {
                 showToast('Login required before squad registration.');
                 dispatch({ type: 'NAVIGATE', payload: { page: 'login' } });
@@ -266,6 +277,7 @@ const Matches = () => {
         showToast(`Reminder armed for ${match.title}.`);
     };
 
+    // Button label logic: changes the CTA text based on status and whether the user is logged in.
     const getActionLabel = (statusKey) => {
         if (statusKey === 'LIVE') return 'WATCH LIVE';
         if (statusKey === 'OPEN') return state.user ? 'REGISTER SQUAD' : 'LOGIN TO REGISTER';
@@ -273,6 +285,7 @@ const Matches = () => {
         return 'SET REMINDER';
     };
 
+    // Button icon logic: pairs each match CTA with the correct icon.
     const getActionIcon = (statusKey) => {
         if (statusKey === 'LIVE') return <ExternalLink size={18} />;
         if (statusKey === 'OPEN') return state.user ? <Ticket size={18} /> : <LogIn size={18} />;
@@ -287,6 +300,7 @@ const Matches = () => {
             exit={{ opacity: 0 }}
             className="w-full min-h-screen pt-32 pb-20 px-6 max-w-[1400px] mx-auto"
         >
+            {/* Header summary: shows page title and live/open/next tournament counts. */}
             <div className="mb-10 flex flex-col xl:flex-row xl:items-end xl:justify-between gap-8">
                 <div>
                     <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/20 mb-5">
@@ -321,6 +335,7 @@ const Matches = () => {
                 </div>
             </div>
 
+            {/* Search/filter bar: controls filteredMatches above. */}
             <div className="mb-10 flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between">
                 <div className="relative w-full lg:max-w-md">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
@@ -354,6 +369,7 @@ const Matches = () => {
             </div>
 
             {filteredMatches.length === 0 ? (
+                /* Empty results state: appears when search/filter excludes every event. */
                 <div className="border border-dashed border-white/10 bg-black/30 p-14 text-center">
                     <Gamepad2 className="mx-auto text-slate-600 mb-5" size={48} />
                     <h2 className="text-xl font-black text-white uppercase tracking-widest mb-2">No deployments found</h2>
@@ -363,6 +379,7 @@ const Matches = () => {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {/* Match card list: renders each filtered tournament with dynamic status and actions. */}
                     {filteredMatches.map((match, index) => (
                         <Motion.div
                             key={match.id}
@@ -372,6 +389,7 @@ const Matches = () => {
                             className={`glass-card flex flex-col bg-dark-surface/80 border-l-4 ${match.status.accent} hover:border-primary transition-all duration-300`}
                         >
                             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-5 p-6 border-b border-white/5">
+                                {/* Card header: status badge, title, game/region, and prize pool. */}
                                 <div>
                                     <div className={`inline-flex items-center gap-2 px-3 py-1 border mb-4 ${match.status.tone}`}>
                                         <CircleDot size={12} className={match.status.key === 'LIVE' ? 'animate-ping' : ''} />
@@ -398,6 +416,7 @@ const Matches = () => {
                             </div>
 
                             <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-5 bg-black/40">
+                                {/* Match meta grid: schedule, countdown, broadcast, and team format. */}
                                 <div className="flex items-center gap-3">
                                     <Calendar className="text-primary shrink-0" size={18} />
                                     <div>
@@ -433,6 +452,7 @@ const Matches = () => {
                             </div>
 
                             <div className="p-6 pt-0 mt-auto bg-black/40">
+                                {/* Match action area: slots/mode information plus the dynamic CTA button. */}
                                 <div className="mb-5 grid grid-cols-2 gap-3">
                                     <div className="border border-white/10 bg-dark-bg/70 p-3">
                                         <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Mode</p>

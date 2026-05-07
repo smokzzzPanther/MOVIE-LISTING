@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 
 const PARTICLE_COUNT = 120;
 
+// Particle factory: builds the moving sparks used by the live hero background.
 const createParticles = (width, height) =>
 	Array.from({ length: PARTICLE_COUNT }, () => ({
 		x: Math.random() * width,
@@ -16,6 +17,7 @@ const createParticles = (width, height) =>
 const LiveHeroBackground = () => {
 	const canvasRef = useRef(null);
 
+	// Canvas animation effect: owns resize handling and the real-time render loop.
 	useEffect(() => {
 		const canvas = canvasRef.current;
 		const context = canvas.getContext('2d');
@@ -26,6 +28,7 @@ const LiveHeroBackground = () => {
 		let previousTime = 0;
 
 		const resize = () => {
+			// Resize logic: matches canvas pixels to element size for sharper drawing.
 			const dpr = Math.min(window.devicePixelRatio || 1, 2);
 			width = canvas.offsetWidth;
 			height = canvas.offsetHeight;
@@ -36,6 +39,7 @@ const LiveHeroBackground = () => {
 		};
 
 		const drawGrid = (time) => {
+			// Grid layer: draws the drifting tactical scan grid.
 			const gridSize = 54;
 			const drift = (time * 0.025) % gridSize;
 
@@ -61,6 +65,7 @@ const LiveHeroBackground = () => {
 		};
 
 		const drawSweep = (time) => {
+			// Sweep layer: draws the moving vertical radar light pass.
 			const sweepX = ((time * 0.09) % (width + 320)) - 160;
 			const gradient = context.createLinearGradient(sweepX - 120, 0, sweepX + 120, 0);
 			gradient.addColorStop(0, 'rgba(56, 189, 248, 0)');
@@ -74,6 +79,7 @@ const LiveHeroBackground = () => {
 		};
 
 		const drawParticles = (delta) => {
+			// Particle layer: moves sparks and wraps them when they leave the canvas.
 			particles.forEach((particle) => {
 				particle.x -= particle.vx * delta;
 				particle.y += particle.vy * delta;
@@ -101,6 +107,7 @@ const LiveHeroBackground = () => {
 		};
 
 		const render = (time) => {
+			// Render loop: clears the frame, draws each live layer, then requests the next frame.
 			const delta = Math.min((time - previousTime) / 16.67 || 1, 2);
 			previousTime = time;
 
@@ -124,6 +131,7 @@ const LiveHeroBackground = () => {
 
 	return (
 		<div className="absolute inset-0 z-0 overflow-hidden bg-black" aria-hidden="true">
+			{/* Layer stack: hero art, canvas effects, scanlines, data grid, and dark readability overlays. */}
 			<div className="hero-live-image absolute inset-0" />
 			<canvas ref={canvasRef} className="absolute inset-0 h-full w-full mix-blend-screen" />
 			<div className="hero-live-scanline absolute inset-0" />

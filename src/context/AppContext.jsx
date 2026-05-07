@@ -5,6 +5,7 @@ import { products as localProducts } from '../data/products';
 
 const AppContext = createContext();
 
+// Initial app state: restores saved user/cart and sets the first visible page.
 const initialState = {
 	user: JSON.parse(localStorage.getItem('user')) || null,
 	cart: JSON.parse(localStorage.getItem('cart')) || [],
@@ -17,6 +18,7 @@ const initialState = {
 	error: null,
 };
 
+// Central reducer: handles navigation, auth, products, cart, search, and toast updates.
 function appReducer(state, action) {
 	switch (action.type) {
 		case 'SET_PRODUCTS':
@@ -30,6 +32,7 @@ function appReducer(state, action) {
 		case 'NAVIGATE':
 			return { ...state, currentPage: action.payload.page, selectedProductId: action.payload.id || null };
 		case 'ADD_TO_CART': {
+			// Cart merge logic: increases quantity instead of adding duplicate product rows.
 			const existingItem = state.cart.find((item) => item.id === action.payload.id);
 			if (existingItem) {
 				return {
@@ -70,12 +73,14 @@ function appReducer(state, action) {
 export function AppProvider({ children }) {
 	const [state, dispatch] = useReducer(appReducer, initialState);
 
+	// Toast helper: displays a short message and clears it automatically.
 	const showToast = (msg) => {
 		dispatch({ type: 'SET_TOAST', payload: msg });
 		setTimeout(() => dispatch({ type: 'SET_TOAST', payload: null }), 3000);
 	};
 
 	useEffect(() => {
+		// Product loading effect: simulates an API call before loading local product data.
 		const fetchProducts = async () => {
 			try {
 				// Simulate network latency (1.5s)
@@ -89,10 +94,12 @@ export function AppProvider({ children }) {
 	}, []);
 
 	useEffect(() => {
+		// User persistence: keeps login state available after page refresh.
 		localStorage.setItem('user', JSON.stringify(state.user));
 	}, [state.user]);
 
 	useEffect(() => {
+		// Cart persistence: keeps selected products available after page refresh.
 		localStorage.setItem('cart', JSON.stringify(state.cart));
 	}, [state.cart]);
 

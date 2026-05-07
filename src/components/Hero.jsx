@@ -7,9 +7,11 @@ const Hero = () => {
 
     return (
         <section className="relative w-full min-h-screen flex items-center justify-center pt-24 pb-12 overflow-hidden">
+            {/* Live hero background: animated visual layer behind the headline and CTA buttons. */}
             <LiveHeroBackground />
 
             <div className="relative z-10 max-w-[1400px] mx-auto px-6 w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                {/* Hero copy section: introduces the site and routes users toward login/start. */}
                 <Motion.div 
                     initial={{ opacity: 0, x: -50 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -30,6 +32,7 @@ const Hero = () => {
                     </p>
 
                     <div className="flex flex-wrap items-center gap-6">
+                        {/* Primary CTA: moves users to the Login page through global navigation. */}
                         <button 
                             className="btn-primary px-10 py-5 text-lg"
                             onClick={() => dispatch({ type: 'NAVIGATE', payload: { page: 'login' } })}

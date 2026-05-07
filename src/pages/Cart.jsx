@@ -4,15 +4,18 @@ import { motion as Motion, AnimatePresence } from 'framer-motion';
 import { Trash2, Plus, Minus, ArrowLeft, ShoppingBag, Loader2, CheckCircle2 } from 'lucide-react';
 
 const Cart = () => {
+	// Cart state: reads selected gear globally and controls checkout animation locally.
 	const { state, dispatch } = useApp();
 	const [isCheckingOut, setIsCheckingOut] = useState(false);
 	const [showSuccess, setShowSuccess] = useState(false);
 
+	// Pricing logic: calculates subtotal, conditional shipping, tax, and final total.
 	const subtotal = state.cart.reduce((acc, item) => acc + item.price * (item.quantity || 1), 0);
 	const shipping = subtotal > 500 ? 0 : 15;
 	const tax = subtotal * 0.08;
 	const total = subtotal + shipping + tax;
 
+	// Checkout flow: simulates processing, shows success, clears cart, then returns home.
 	const handleCheckout = () => {
 		setIsCheckingOut(true);
 		setTimeout(() => {
@@ -28,6 +31,7 @@ const Cart = () => {
 	if (showSuccess) {
 		return (
 			<div className='min-h-[calc(100vh-80px)] flex items-center justify-center px-6'>
+				{/* Success state: shown after checkout before the cart is cleared. */}
 				<Motion.div
 					initial={{ scale: 0.9, opacity: 0 }}
 					animate={{ scale: 1, opacity: 1 }}
@@ -53,6 +57,7 @@ const Cart = () => {
 
 	return (
 		<div className='max-w-7xl mx-auto px-6 py-12 pt-32'>
+			{/* Back action: returns the user from cart to the armory/home page. */}
 			<button 
 				onClick={() => dispatch({ type: 'NAVIGATE', payload: { page: 'home' } })}
 				className='flex items-center gap-2 text-slate-400 hover:text-primary font-black text-sm mb-10 transition-colors group uppercase tracking-widest'
@@ -64,6 +69,7 @@ const Cart = () => {
 			<div className='flex flex-col lg:flex-row gap-12'>
 				<div className='flex-1 space-y-8'>
 					<header className='flex items-end justify-between border-b border-white/5 pb-6'>
+						{/* Cart header: shows selected item count and clear-cart action. */}
 						<div>
 							<h1 className='text-4xl font-black text-white tracking-tighter mb-2 uppercase'>Your Loadout</h1>
 							<p className='text-primary font-bold uppercase tracking-widest text-sm'>{state.cart.length} gear selected</p>
@@ -79,6 +85,7 @@ const Cart = () => {
 					</header>
 
 					{state.cart.length === 0 ? (
+						/* Empty cart state: prompts users to return to the armory. */
 						<div className='glass-card p-20 text-center border-dashed border-2 border-white/10 bg-transparent'>
 							<ShoppingBag className='mx-auto text-slate-700 mb-6' size={60} />
 							<h3 className='text-xl font-bold text-white mb-8 uppercase tracking-widest'>Your loadout is empty</h3>
@@ -92,6 +99,7 @@ const Cart = () => {
 					) : (
 						<div className='space-y-4'>
 							<AnimatePresence mode='popLayout'>
+								{/* Cart item list: renders each cart product with quantity and remove controls. */}
 								{state.cart.map((item) => (
 									<Motion.div
 										key={item.id}
@@ -142,6 +150,7 @@ const Cart = () => {
 
 				<div className='lg:w-96'>
 					<div className='glass-card p-8 sticky top-32 border-t-2 border-t-primary'>
+						{/* Cost summary: displays the totals calculated at the top of this component. */}
 						<h2 className='text-xl font-black text-white mb-8 tracking-tighter uppercase'>Operation Costs</h2>
 						<div className='space-y-4 mb-10'>
 							<div className='flex justify-between text-sm font-bold'>
