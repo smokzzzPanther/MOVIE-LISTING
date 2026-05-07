@@ -1,75 +1,81 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { useState } from 'react';
-import Login from './pages/Login';
+import { useEffect } from 'react';
+import { AppProvider, useApp } from './context/AppContext';
+import Navbar from './components/Navbar';
 import Home from './pages/Home';
-import ProductDetail from './pages/ProductDetail';
+import Login from './pages/Login';
 import Cart from './pages/Cart';
+import ProductDetail from './pages/ProductDetail';
+import Matches from './pages/Matches';
+import Features from './pages/Features';
+import Shop from './pages/Shop';
+import Background3D from './components/Background3D';
+import { motion as Motion, AnimatePresence } from 'framer-motion';
 
-function App() {
-	const [user, setUser] = useState(null);
-	const [cart, setCart] = useState([]);
+function AppContent() {
+	const { state } = useApp();
 
-	const handleLogin = (userData) => {
-		setUser(userData);
-	};
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	}, [state.currentPage]);
 
-	const handleLogout = () => {
-		setUser(null);
-		setCart([]);
-	};
-
-	const addToCart = (product) => {
-		setCart([...cart, product]);
-	};
-
-	const removeFromCart = (index) => {
-		const updatedCart = [...cart];
-		updatedCart.splice(index, 1);
-		setCart(updatedCart);
+	const renderPage = () => {
+		switch (state.currentPage) {
+			case 'login':
+				return <Login />;
+			case 'cart':
+				return <Cart />;
+			case 'detail':
+				return <ProductDetail />;
+			case 'matches':
+				return <Matches />;
+			case 'features':
+				return <Features />;
+			case 'shop':
+				return <Shop />;
+			case 'home':
+			default:
+				return <Home />;
+		}
 	};
 
 	return (
-		<Routes>
-			<Route
-				path='/login'
-				element={<Login onLogin={handleLogin} />}
-			/>
+		<div className='relative min-h-screen selection:bg-primary/30 selection:text-white'>
+			<Background3D />
+			<Navbar />
+			
+			<Motion.main 
+				key={state.currentPage}
+				initial={{ opacity: 0, y: 20 }}
+				animate={{ opacity: 1, y: 0 }}
+				exit={{ opacity: 0, y: -20 }}
+				transition={{ duration: 0.5, ease: 'easeOut' }}
+				className='relative z-10'
+			>
+				{renderPage()}
+			</Motion.main>
 
-			<Route
-				path='/'
-				element={
-					<Home
-						user={user}
-						onLogout={handleLogout}
-						cart={cart}
-					/>
-				}
-			/>
+			<AnimatePresence>
+				{state.toast && (
+					<Motion.div
+						initial={{ opacity: 0, y: 50, x: '-50%' }}
+						animate={{ opacity: 1, y: 0, x: '-50%' }}
+						exit={{ opacity: 0, y: 20, x: '-50%' }}
+						className='fixed bottom-10 left-1/2 z-[100] px-6 py-4 bg-dark-surface border border-primary text-white shadow-[0_0_20px_rgba(255,107,0,0.2)] flex items-center gap-3 font-black tracking-widest uppercase text-sm'
+					>
+						<span className='text-primary'>✓</span>
+						{state.toast}
+					</Motion.div>
+				)}
+			</AnimatePresence>
+		</div>
+	);
+}
 
-			<Route
-				path='/product/:id'
-				element={
-					<ProductDetail
-						user={user}
-						onLogout={handleLogout}
-						addToCart={addToCart}
-						cart={cart}
-					/>
-				}
-			/>
-
-			<Route
-				path='/cart'
-				element={
-					<Cart
-						user={user}
-						onLogout={handleLogout}
-						cart={cart}
-						removeFromCart={removeFromCart}
-					/>
-				}
-			/>
-		</Routes>
+function App() {
+	return (
+		<AppProvider>
+			<AppContent />
+		</AppProvider>
 	);
 }
 

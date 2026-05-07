@@ -1,33 +1,57 @@
 import { categories, priceRanges } from '../data/products';
+import { Filter, ChevronRight } from 'lucide-react';
 
-const Sidebar = () => {
-	const renderOption = (label) => (
-		<label className='flex items-center px-3 py-2 rounded-lg cursor-pointer hover:bg-gray-50 transition'>
-			<span className='text-sm text-gray-700'>{label}</span>
-		</label>
-	);
-
+const Sidebar = ({ selectedCategory, setSelectedCategory, selectedPriceRange, setSelectedPriceRange }) => {
 	return (
-		<aside className='hidden lg:block w-64 bg-white border-r border-gray-200 p-6 h-[calc(100vh-64px)] sticky top-16 overflow-y-auto'>
-			<div className='mb-6 pb-4 border-gray-200'>
-				<h2 className='text-lg font-bold text-gray-900'>Filters</h2>
+		<aside className='w-80 p-8 hidden lg:block sticky top-24 h-[calc(100vh-96px)] overflow-y-auto border-r border-white/5 bg-dark-surface/50 backdrop-blur-md'>
+			<div className='flex items-center gap-2 mb-10'>
+				<Filter className='text-primary' size={20} />
+				<h2 className='text-xl font-black text-white tracking-tight uppercase'>Refine Specs</h2>
 			</div>
 
-			<div className='mb-6'>
-				<h3 className='text-sm font-semibold text-gray-700 mb-3'>
-					Category
-				</h3>
-				<div className='space-y-2'>
-					{categories.map((category) => renderOption(category))}
+			<div className='space-y-10'>
+				<div className='space-y-4'>
+					<h3 className='text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] px-2'>Category</h3>
+					<div className='space-y-1'>
+						{categories.map((category) => (
+							<button
+								key={category}
+								onClick={() => setSelectedCategory(category)}
+								className={`
+									w-full flex items-center justify-between px-4 py-3 rounded-none border-l-2 text-sm font-bold transition-all uppercase tracking-wide
+									${
+										selectedCategory === category
+											? 'bg-primary/10 border-primary text-white shadow-lg shadow-primary/5'
+											: 'border-transparent text-slate-400 hover:text-white hover:bg-white/5 hover:border-slate-500'
+									}
+								`}>
+								<span>{category}</span>
+								{selectedCategory === category && <ChevronRight className="text-primary" size={14} />}
+							</button>
+						))}
+					</div>
 				</div>
-			</div>
 
-			<div>
-				<h3 className='text-sm font-semibold text-gray-700 mb-3'>
-					Price Range
-				</h3>
-				<div className='space-y-2'>
-					{priceRanges.map((range) => renderOption(range.label))}
+				<div className='space-y-4'>
+					<h3 className='text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] px-2'>Investment Range</h3>
+					<div className='space-y-1'>
+						{priceRanges.map((range) => (
+							<button
+								key={range.label}
+								onClick={() => setSelectedPriceRange(range)}
+								className={`
+									w-full flex items-center justify-between px-4 py-3 rounded-none border-l-2 text-sm font-bold transition-all uppercase tracking-wide
+									${
+										selectedPriceRange?.label === range.label
+											? 'bg-primary/10 border-primary text-white shadow-lg shadow-primary/5'
+											: 'border-transparent text-slate-400 hover:text-white hover:bg-white/5 hover:border-slate-500'
+									}
+								`}>
+								<span>{range.label}</span>
+								{selectedPriceRange?.label === range.label && <ChevronRight className="text-primary" size={14} />}
+							</button>
+						))}
+					</div>
 				</div>
 			</div>
 		</aside>
