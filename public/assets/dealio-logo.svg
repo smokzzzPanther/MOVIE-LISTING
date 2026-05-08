@@ -1,39 +1,14 @@
 <svg width="260" height="72" viewBox="0 0 260 72" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="dealioLogoTitle">
   <title id="dealioLogoTitle">Dealio</title>
-  <defs>
-    <linearGradient id="dealioMarkGradient" x1="7" y1="7" x2="61" y2="65" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#38BDF8"/>
-      <stop offset="0.46" stop-color="#FF8B33"/>
-      <stop offset="1" stop-color="#FF6B00"/>
-    </linearGradient>
-    <linearGradient id="dealioTextGradient" x1="79" y1="13" x2="226" y2="58" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#FFFFFF"/>
-      <stop offset="0.68" stop-color="#F8FAFC"/>
-      <stop offset="1" stop-color="#FF8B33"/>
-    </linearGradient>
-    <filter id="dealioGlow" x="-18" y="-18" width="96" height="108" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
-      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-      <feOffset/>
-      <feGaussianBlur stdDeviation="7"/>
-      <feComposite in2="hardAlpha" operator="out"/>
-      <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 0.419608 0 0 0 0 0 0 0 0 0.42 0"/>
-      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_4"/>
-      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_4" result="shape"/>
-    </filter>
-  </defs>
-  <g filter="url(#dealioGlow)">
-    <path d="M12 19.9C12 15.5 15.5 12 19.9 12H47.5C50 12 52.3 13.2 53.8 15.1L62.4 26.1C64.1 28.2 64.5 31.1 63.5 33.6L53.1 58.3C51.9 61.2 49.1 63 46 63H19.9C15.5 63 12 59.5 12 55.1V19.9Z" fill="#050505" stroke="url(#dealioMarkGradient)" stroke-width="4"/>
-    <path d="M24 24H39.8C45.4 24 49.9 28.5 49.9 34.1V40.9C49.9 46.5 45.4 51 39.8 51H24V24Z" fill="url(#dealioMarkGradient)"/>
-    <path d="M31 31H39C41.2 31 43 32.8 43 35V40C43 42.2 41.2 44 39 44H31V31Z" fill="#050505"/>
-    <circle cx="53" cy="25" r="3.5" fill="#FF8B33"/>
-    <path d="M50.5 44.5L60.5 34.5" stroke="#38BDF8" stroke-width="3" stroke-linecap="round"/>
-  </g>
-  <path d="M81 17H101.2C114.4 17 122.7 24.3 122.7 36C122.7 47.7 114.4 55 101.2 55H81V17ZM100.7 46.1C107.3 46.1 111.1 42.4 111.1 36C111.1 29.6 107.3 25.9 100.7 25.9H92.2V46.1H100.7Z" fill="url(#dealioTextGradient)"/>
-  <path d="M128 17H160.5V25.5H139.2V31.7H158.4V39.7H139.2V46.5H161V55H128V17Z" fill="url(#dealioTextGradient)"/>
-  <path d="M177.4 17H188.3L204.8 55H192.9L190.3 48.3H175L172.4 55H160.9L177.4 17ZM187.2 40.2L182.7 28.6L178.1 40.2H187.2Z" fill="url(#dealioTextGradient)"/>
-  <path d="M208.4 17H219.7V46H239V55H208.4V17Z" fill="url(#dealioTextGradient)"/>
-  <path d="M242.8 17H254V55H242.8V17Z" fill="#FF8B33"/>
-  <path d="M83 63H143" stroke="#FF6B00" stroke-width="3" stroke-linecap="round"/>
-  <path d="M151 63H188" stroke="#38BDF8" stroke-width="3" stroke-linecap="round"/>
+  <rect x="7" y="10" width="52" height="52" rx="12" fill="#F97316"/>
+  <path d="M21 22H34.5C43.2 22 49 27.4 49 36C49 44.6 43.2 50 34.5 50H21V22ZM33.8 42.4C38.6 42.4 41.4 40 41.4 36C41.4 32 38.6 29.6 33.8 29.6H28.8V42.4H33.8Z" fill="white"/>
+  <circle cx="52" cy="20" r="5" fill="#2563EB"/>
+  <text x="74" y="47" fill="#162033" font-family="Arial, Helvetica, sans-serif" font-size="42" font-weight="800" letter-spacing="0">
+    Deali
+  </text>
+  <text x="188" y="47" fill="#F97316" font-family="Arial, Helvetica, sans-serif" font-size="42" font-weight="800" letter-spacing="0">
+    o
+  </text>
+  <path d="M76 57H154" stroke="#F97316" stroke-width="4" stroke-linecap="round"/>
+  <path d="M165 57H202" stroke="#2563EB" stroke-width="4" stroke-linecap="round"/>
 </svg>
