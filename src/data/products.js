@@ -1,10 +1,9 @@
-// Product catalog: local inventory used by the armory, product detail, and cart pages.
 export const products = [
 	{
 		id: 1,
 		title: 'StrikeForce Pro X Keyboard',
-		price: 199.99,
-		image: 'https://images.unsplash.com/photo-1595225476474-87563907a212?w=400&h=400&fit=crop&q=80',
+		price: 3999,
+		image: 'https://images.unsplash.com/photo-1595225476474-87563907a212?w=500&h=500&fit=crop&q=80',
 		category: 'Keyboards',
 		seller: 'StrikeForce Gear',
 		rating: 4.9,
@@ -12,8 +11,8 @@ export const products = [
 	{
 		id: 2,
 		title: 'Viper Superlight Mouse',
-		price: 149.99,
-		image: 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=400&h=400&fit=crop&q=80',
+		price: 2499,
+		image: 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=500&h=500&fit=crop&q=80',
 		category: 'Mice',
 		seller: 'AeroTech',
 		rating: 4.8,
@@ -21,8 +20,8 @@ export const products = [
 	{
 		id: 3,
 		title: 'Titan Heavy Mousepad',
-		price: 34.99,
-		image: 'https://images.unsplash.com/photo-1527814050087-37938154733d?w=400&h=400&fit=crop&q=80',
+		price: 799,
+		image: 'https://images.unsplash.com/photo-1527814050087-37938154733d?w=500&h=500&fit=crop&q=80',
 		category: 'Mousepads',
 		seller: 'StrikeForce Gear',
 		rating: 4.7,
@@ -30,35 +29,35 @@ export const products = [
 	{
 		id: 4,
 		title: 'Cloudburst Wireless Headset',
-		price: 229.99,
-		image: 'https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=400&h=400&fit=crop&q=80',
+		price: 3299,
+		image: 'https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=500&h=500&fit=crop&q=80',
 		category: 'Headsets',
 		seller: 'AudioPro Gaming',
 		rating: 4.9,
 	},
 	{
 		id: 5,
-		title: 'Predator 27" 240Hz Monitor',
-		price: 599.99,
-		image: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&h=400&fit=crop&q=80',
+		title: 'Predator 27 Inch Monitor',
+		price: 12999,
+		image: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=500&h=500&fit=crop&q=80',
 		category: 'Monitors',
 		seller: 'VisionTech',
 		rating: 4.8,
 	},
 	{
 		id: 6,
-		title: 'Phantom 60HE Analog',
-		price: 179.99,
-		image: 'https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?w=400&h=400&fit=crop&q=80',
+		title: 'Phantom 60HE Keyboard',
+		price: 4499,
+		image: 'https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?w=500&h=500&fit=crop&q=80',
 		category: 'Keyboards',
 		seller: 'PhantomCorp',
 		rating: 4.9,
 	},
 	{
 		id: 7,
-		title: 'DeathStrike V3 Pro',
-		price: 159.99,
-		image: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&h=400&fit=crop&q=80',
+		title: 'DeathStrike V3 Pro Mouse',
+		price: 2999,
+		image: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=500&h=500&fit=crop&q=80',
 		category: 'Mice',
 		seller: 'StrikeForce Gear',
 		rating: 4.8,
@@ -66,56 +65,24 @@ export const products = [
 	{
 		id: 8,
 		title: 'Artisan Zero Soft Pad',
-		price: 59.99,
-		image: 'https://images.unsplash.com/photo-1589254066213-a0c9dc853511?w=400&h=400&fit=crop&q=80',
+		price: 1199,
+		image: 'https://images.unsplash.com/photo-1589254066213-a0c9dc853511?w=500&h=500&fit=crop&q=80',
 		category: 'Mousepads',
 		seller: 'Artisan',
 		rating: 4.9,
 	},
-	{
-		id: 9,
-		title: 'Maxwell Studio Gaming Headset',
-		price: 299.99,
-		image: 'https://images.unsplash.com/photo-1550520265-d017ccdeabdb?w=400&h=400&fit=crop&q=80',
-		category: 'Headsets',
-		seller: 'AudioPro Gaming',
-		rating: 4.8,
-	},
-	{
-		id: 10,
-		title: 'Swift OLED 34" Ultrawide',
-		price: 1299.99,
-		image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&h=400&fit=crop&q=80',
-		category: 'Monitors',
-		seller: 'VisionTech',
-		rating: 4.9,
-	},
-	{
-		id: 11,
-		title: 'Corsair K70 MAX Magnetic',
-		price: 229.99,
-		image: 'https://images.unsplash.com/photo-1587826315264-8848c772c679?w=400&h=400&fit=crop&q=80',
-		category: 'Keyboards',
-		seller: 'Corsair',
-		rating: 4.7,
-	},
-	{
-		id: 12,
-		title: 'UltralightX Carbon Fiber',
-		price: 189.99,
-		image: 'https://images.unsplash.com/photo-1629337583769-e7d69b9148d5?w=400&h=400&fit=crop&q=80',
-		category: 'Mice',
-		seller: 'AeroTech',
-		rating: 4.9,
-	},
 ];
 
-// Filter options: consumed by Sidebar and Armory filtering logic.
 export const categories = ['All', 'Keyboards', 'Mice', 'Mousepads', 'Headsets', 'Monitors'];
+
 export const priceRanges = [
 	{ label: 'All Prices', min: 0, max: Infinity },
-	{ label: 'Under $50', min: 0, max: 50 },
-	{ label: '$50 - $150', min: 50, max: 150 },
-	{ label: '$150 - $300', min: 150, max: 300 },
-	{ label: 'Over $300', min: 300, max: Infinity },
+	{ label: 'Under Rs 1000', min: 0, max: 1000 },
+	{ label: 'Rs 1000 - 3000', min: 1000, max: 3000 },
+	{ label: 'Rs 3000 - 5000', min: 3000, max: 5000 },
+	{ label: 'Above Rs 5000', min: 5000, max: Infinity },
 ];
+
+export function formatPrice(price) {
+	return `Rs ${Number(price).toLocaleString('en-IN')}`;
+}

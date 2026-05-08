@@ -1,115 +1,130 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useReducer, useEffect } from 'react';
-
-import { products as localProducts } from '../data/products';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { products } from '../data/products';
 
 const AppContext = createContext();
 
-// Initial app state: restores saved user/cart and sets the first visible page.
-const initialState = {
-	user: JSON.parse(localStorage.getItem('user')) || null,
-	cart: JSON.parse(localStorage.getItem('cart')) || [],
-	currentPage: 'home',
-	selectedProductId: null,
-	searchQuery: '',
-	toast: null,
-	products: [],
-	isLoadingProducts: true,
-	error: null,
-};
-
-// Central reducer: handles navigation, auth, products, cart, search, and toast updates.
-function appReducer(state, action) {
-	switch (action.type) {
-		case 'SET_PRODUCTS':
-			return { ...state, products: action.payload, isLoadingProducts: false };
-		case 'SET_PRODUCTS_ERROR':
-			return { ...state, error: action.payload, isLoadingProducts: false };
-		case 'LOGIN':
-			return { ...state, user: action.payload, currentPage: 'home' };
-		case 'LOGOUT':
-			return { ...state, user: null, cart: [], currentPage: 'home' };
-		case 'NAVIGATE':
-			return { ...state, currentPage: action.payload.page, selectedProductId: action.payload.id || null };
-		case 'ADD_TO_CART': {
-			// Cart merge logic: increases quantity instead of adding duplicate product rows.
-			const existingItem = state.cart.find((item) => item.id === action.payload.id);
-			if (existingItem) {
-				return {
-					...state,
-					cart: state.cart.map((item) =>
-						item.id === action.payload.id
-							? { ...item, quantity: (item.quantity || 1) + 1 }
-							: item
-					),
-				};
-			}
-			return { ...state, cart: [...state.cart, { ...action.payload, quantity: 1 }] };
-		}
-		case 'REMOVE_FROM_CART':
-			return { ...state, cart: state.cart.filter((item) => item.id !== action.payload) };
-		case 'UPDATE_QUANTITY':
-			return {
-				...state,
-				cart: state.cart
-					.map((item) =>
-						item.id === action.payload.id
-							? { ...item, quantity: Math.max(0, (item.quantity || 1) + action.payload.delta) }
-							: item
-					)
-					.filter((item) => item.quantity > 0),
-			};
-		case 'CLEAR_CART':
-			return { ...state, cart: [] };
-		case 'SET_SEARCH':
-			return { ...state, searchQuery: action.payload };
-		case 'SET_TOAST':
-			return { ...state, toast: action.payload };
-		default:
-			return state;
+function readSavedValue(key, fallbackValue) {
+	try {
+		const savedValue = localStorage.getItem(key);
+		return savedValue ? JSON.parse(savedValue) : fallbackValue;
+	} catch {
+		return fallbackValue;
 	}
 }
 
-export function AppProvider({ children }) {
-	const [state, dispatch] = useReducer(appReducer, initialState);
+function cleanCartItem(item) {
+	const price = Number(String(item.price).replace(/[^\d.]/g, ''));
 
-	// Toast helper: displays a short message and clears it automatically.
-	const showToast = (msg) => {
-		dispatch({ type: 'SET_TOAST', payload: msg });
-		setTimeout(() => dispatch({ type: 'SET_TOAST', payload: null }), 3000);
+	return {
+		id: item.id,
+		title: item.title,
+		price: Number.isNaN(price) ? 0 : price,
+		image: item.image,
+		category: item.category,
+		quantity: item.quantity || 1,
 	};
-
-	useEffect(() => {
-		// Product loading effect: simulates an API call before loading local product data.
-		const fetchProducts = async () => {
-			try {
-				// Simulate network latency (1.5s)
-				await new Promise((resolve) => setTimeout(resolve, 1500));
-				dispatch({ type: 'SET_PRODUCTS', payload: localProducts });
-			} catch {
-				dispatch({ type: 'SET_PRODUCTS_ERROR', payload: 'Failed to fetch products' });
-			}
-		};
-		fetchProducts();
-	}, []);
-
-	useEffect(() => {
-		// User persistence: keeps login state available after page refresh.
-		localStorage.setItem('user', JSON.stringify(state.user));
-	}, [state.user]);
-
-	useEffect(() => {
-		// Cart persistence: keeps selected products available after page refresh.
-		localStorage.setItem('cart', JSON.stringify(state.cart));
-	}, [state.cart]);
-
-	return (
-		<AppContext.Provider value={{ state, dispatch, showToast }}>
-			{children}
-		</AppContext.Provider>
-	);
 }
 
+export function AppProvider({ children }) {
+	const [user, setUser] = useState(() => readSavedValue('user', null));
+	const [cart, setCart] = useState(() => readSavedValue('cart', []).map(cleanCartItem));
+	const [currentPage, setCurrentPage] = useState('home');
+	const [selectedProductId, setSelectedProductId] = useState(null);
+	const [searchQuery, setSearchQuery] = useState('');
+	const [toast, setToast] = useState('');
+
+	useEffect(() => {
+		localStorage.setItem('user', JSON.stringify(user));
+	}, [user]);
+
+	useEffect(() => {
+		localStorage.setItem('cart', JSON.stringify(cart));
+	}, [cart]);
+
+	function navigate(page, productId = null) {
+		setCurrentPage(page);
+		setSelectedProductId(productId);
+	}
+
+	function login(email) {
+		setUser({ name: 'Student User', email });
+		navigate('home');
+		showToast('Login successful');
+	}
+
+	function logout() {
+		setUser(null);
+		setCart([]);
+		navigate('home');
+	}
+
+	function showToast(message) {
+		setToast(message);
+		setTimeout(() => setToast(''), 2000);
+	}
+
+	function addToCart(product, amount = 1) {
+		const cartProduct = cleanCartItem({ ...product, quantity: amount });
+
+		setCart((oldCart) => {
+			const alreadyInCart = oldCart.find((item) => item.id === cartProduct.id);
+
+			if (alreadyInCart) {
+				return oldCart.map((item) =>
+					item.id === cartProduct.id
+						? { ...item, quantity: item.quantity + amount }
+						: item
+				);
+			}
+
+			return [...oldCart, cartProduct];
+		});
+
+		showToast(`${product.title} added to cart`);
+	}
+
+	function removeFromCart(productId) {
+		setCart((oldCart) => oldCart.filter((item) => item.id !== productId));
+	}
+
+	function updateQuantity(productId, change) {
+		setCart((oldCart) =>
+			oldCart
+				.map((item) =>
+					item.id === productId
+						? { ...item, quantity: item.quantity + change }
+						: item
+				)
+				.filter((item) => item.quantity > 0)
+		);
+	}
+
+	function clearCart() {
+		setCart([]);
+	}
+
+	const value = {
+		products,
+		user,
+		cart,
+		currentPage,
+		selectedProductId,
+		searchQuery,
+		toast,
+		setSearchQuery,
+		navigate,
+		login,
+		logout,
+		addToCart,
+		removeFromCart,
+		updateQuantity,
+		clearCart,
+		showToast,
+	};
+
+	return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+}
 
 export function useApp() {
 	return useContext(AppContext);

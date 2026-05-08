@@ -1,25 +1,20 @@
-import { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useApp } from '../context/AppContext';
-import Sidebar from './Sidebar';
-import ProductCard from './ProductCard';
 import { priceRanges } from '../data/products';
-import { motion as Motion, AnimatePresence } from 'framer-motion';
-import { Loader } from 'lucide-react';
+import ProductCard from './ProductCard';
+import Sidebar from './Sidebar';
 
-const Armory = () => {
-	// Armory state: stores selected filters, selected sort mode, and how many cards are visible.
-	const { state, dispatch, showToast } = useApp();
+function Armory() {
+	const { products, searchQuery, setSearchQuery, navigate, addToCart } = useApp();
 	const [selectedCategory, setSelectedCategory] = useState('All');
 	const [selectedPriceRange, setSelectedPriceRange] = useState(priceRanges[0]);
-	const [sortBy, setSortBy] = useState('Newest');
-	const [visibleCount, setVisibleCount] = useState(6);
+	const [sortBy, setSortBy] = useState('default');
 
-	// Product filtering and sorting logic: search/category/price filters run first, then sort order is applied.
 	const filteredProducts = useMemo(() => {
-		let result = state.products.filter((product) => {
+		let result = products.filter((product) => {
 			const matchesSearch = product.title
 				.toLowerCase()
-				.includes(state.searchQuery.toLowerCase());
+				.includes(searchQuery.toLowerCase());
 			const matchesCategory =
 				selectedCategory === 'All' || product.category === selectedCategory;
 			const matchesPrice =
@@ -29,107 +24,69 @@ const Armory = () => {
 			return matchesSearch && matchesCategory && matchesPrice;
 		});
 
-		if (sortBy === 'Price: Low to High') {
-			result.sort((a, b) => a.price - b.price);
-		} else if (sortBy === 'Price: High to Low') {
-			result.sort((a, b) => b.price - a.price);
-		} else if (sortBy === 'Rating') {
-			result.sort((a, b) => b.rating - a.rating);
+		if (sortBy === 'low') {
+			result = [...result].sort((a, b) => a.price - b.price);
+		}
+
+		if (sortBy === 'high') {
+			result = [...result].sort((a, b) => b.price - a.price);
 		}
 
 		return result;
-	}, [state.products, state.searchQuery, selectedCategory, selectedPriceRange, sortBy]);
-
-	// Pagination logic: only renders the first visibleCount products until "Load More" is clicked.
-	const visibleProducts = filteredProducts.slice(0, visibleCount);
+	}, [products, searchQuery, selectedCategory, selectedPriceRange, sortBy]);
 
 	return (
-		<section className='relative z-10 max-w-[1400px] mx-auto px-6 py-20 border-t border-white/5'>
-            <div className="text-center mb-16">
-                <h2 className="text-5xl font-black text-white tracking-tighter uppercase mb-4">Tactical <span className="text-primary">Armory</span></h2>
-                <p className="text-slate-400 font-bold max-w-2xl mx-auto">Equip yourself with the best hardware and assets to secure your victory. Official Sponsors & Gear.</p>
-            </div>
+		<section className="shop-section">
+			<div className="section-heading">
+				<p className="small-title">Products</p>
+				<h2>Gaming Gear Shop</h2>
+				<p>Search, filter and add products to the cart.</p>
+			</div>
 
-            <div className='flex flex-col lg:flex-row gap-8'>
-                <Sidebar
-                    selectedCategory={selectedCategory}
-                    setSelectedCategory={setSelectedCategory}
-                    selectedPriceRange={selectedPriceRange}
-                    setSelectedPriceRange={setSelectedPriceRange}
-                />
+			<div className="shop-layout">
+				<Sidebar
+					selectedCategory={selectedCategory}
+					setSelectedCategory={setSelectedCategory}
+					selectedPriceRange={selectedPriceRange}
+					setSelectedPriceRange={setSelectedPriceRange}
+				/>
 
-                <main className='flex-1'>
-                    <header className='flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12'>
-                        <div>
-                            <p className='text-primary font-bold uppercase tracking-widest text-sm'>
-                                {filteredProducts.length} ASSETS READY
-                            </p>
-                        </div>
+				<div className="products-area">
+					<div className="shop-toolbar">
+						<input
+							type="text"
+							placeholder="Search products..."
+							value={searchQuery}
+							onChange={(event) => setSearchQuery(event.target.value)}
+						/>
 
-                        <div className='flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide'>
-                            {/* Sort controls: updates sortBy, which drives the useMemo sorting logic above. */}
-                            {['Newest', 'Price: Low to High', 'Price: High to Low', 'Rating'].map((sort) => (
-                                <button
-                                    key={sort}
-                                    onClick={() => setSortBy(sort)}
-                                    className={`
-                                        whitespace-nowrap px-4 py-2 border text-xs font-black transition-all uppercase tracking-widest
-                                        ${
-                                            sortBy === sort
-                                                ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20'
-                                                : 'bg-dark-surface/50 border-dark-border text-slate-400 hover:border-primary/50 hover:text-primary'
-                                        }
-                                    `}>
-                                    {sort}
-                                </button>
-                            ))}
-                        </div>
-                    </header>
+						<select value={sortBy} onChange={(event) => setSortBy(event.target.value)}>
+							<option value="default">Default Order</option>
+							<option value="low">Price: Low to High</option>
+							<option value="high">Price: High to Low</option>
+						</select>
+					</div>
 
-                    {state.isLoadingProducts ? (
-                        <div className="flex flex-col items-center justify-center py-20 opacity-50">
-                            <Loader className="animate-spin text-primary mb-4" size={48} />
-                            <p className="text-slate-400 font-bold tracking-widest uppercase">Initializing Assets...</p>
-                        </div>
-                    ) : (
-                        <>
-                            <AnimatePresence mode='popLayout'>
-                                <Motion.div 
-                                    layout
-                                    className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8'
-                                >
-                                    {visibleProducts.map((product) => (
-                                        <ProductCard
-                                            key={product.id}
-                                            product={product}
-                                            onClick={() => dispatch({ type: 'NAVIGATE', payload: { page: 'detail', id: product.id } })}
-                                            onAddToCart={(p) => {
-                                                // Add-to-cart action: stores the product globally and shows a toast.
-                                                dispatch({ type: 'ADD_TO_CART', payload: p });
-                                                showToast(`${p.title} added to armory stash!`);
-                                            }}
-                                        />
-                                    ))}
-                                </Motion.div>
-                            </AnimatePresence>
+					<p className="result-count">{filteredProducts.length} products found</p>
 
-                            {visibleCount < filteredProducts.length && (
-                                <div className="mt-16 flex justify-center">
-                                    {/* Load-more action: reveals the next batch of product cards. */}
-                                    <button 
-                                        className="btn-primary"
-                                        onClick={() => setVisibleCount(prev => prev + 6)}
-                                    >
-                                        LOAD MORE GEAR
-                                    </button>
-                                </div>
-                            )}
-                        </>
-                    )}
-                </main>
-            </div>
+					<div className="product-grid">
+						{filteredProducts.map((product) => (
+							<ProductCard
+								key={product.id}
+								product={product}
+								onViewDetails={() => navigate('detail', product.id)}
+								onAddToCart={() => addToCart(product)}
+							/>
+						))}
+					</div>
+
+					{filteredProducts.length === 0 && (
+						<p className="empty-text">No products matched your search.</p>
+					)}
+				</div>
+			</div>
 		</section>
 	);
-};
+}
 
 export default Armory;
